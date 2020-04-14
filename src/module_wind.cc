@@ -9,16 +9,25 @@ ModuleWind::ModuleWind() {
   /* Get a curl handle */
   curl_ = curl_easy_init();
   initialized_ = curl_ != nullptr;
-  new_data_available_ = false;
   data_reading_ = -1;
+  new_data_available_ = false;
+}
+
+ModuleWind::ModuleWind(int wind_deg) {
+  std::cout << "Constructing [Module] Wind" << std::endl;
+  curl_ = nullptr;
+  initialized_ = true;
+  data_reading_ = wind_deg;
+  new_data_available_ = true;
 }
 
 ModuleWind::~ModuleWind() {
   /* Always cleanup */
-  curl_easy_cleanup(curl_);
+  if (curl_) curl_easy_cleanup(curl_);
 }
 
 bool ModuleWind::GetInitialized() {
+  if (!initialized_) std::cout << "[Module] Wind not initialized" << std::endl;
   return initialized_;
 }
 
@@ -36,8 +45,9 @@ void ModuleWind::Run() {
     curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, WriteCallback);
     /* Pointer to pass to our write function */
     curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &data);
-    /* Perform the request, res will get the return code */
-    CURLcode res = curl_easy_perform(curl_);
+    /* Perform the request */
+    curl_easy_perform(curl_);
+
     nlohmann::json json_obj;
     std::stringstream(data) >> json_obj;
     data_reading_ = json_obj["wind"]["deg"];

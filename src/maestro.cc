@@ -21,6 +21,7 @@ Maestro::Maestro() {
 }
 
 bool Maestro::GetInitialized() {
+  if (!initialized_) std::cout << "[Hardware] Maestro not initialized" << std::endl;
   return initialized_;
 }
 

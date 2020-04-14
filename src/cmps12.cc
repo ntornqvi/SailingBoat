@@ -17,6 +17,7 @@ CMPS12::CMPS12() {
 }
 
 bool CMPS12::GetInitialized() {
+  if (!initialized_) std::cout << "[Hardware] CMPS12 not initialized" << std::endl;
   return initialized_;
 }
 
@@ -40,6 +41,6 @@ int CMPS12::Read() {
   }
 
   // Bitshift compass bearing
-  return Bitshift(raw_data[COMPASS_BEARING_16_HIGH_BYTE_DEGREES], 
+  return Bitshift(raw_data[COMPASS_BEARING_16_HIGH_BYTE_DEGREES],
                   raw_data[COMPASS_BEARING_16_LOW_BYTE_DEGREES]) / 16;
 }
